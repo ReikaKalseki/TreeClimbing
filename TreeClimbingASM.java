@@ -1,8 +1,8 @@
 /*******************************************************************************
  * @author Reika Kalseki
- * 
+ *
  * Copyright 2017
- * 
+ *
  * All rights reserved.
  * Distribution of the software in any form is only allowed with
  * explicit, prior permission from the owner.
@@ -15,16 +15,19 @@ import java.util.HashSet;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.classloading.FMLForgePlugin;
 
 import Reika.DragonAPI.Exception.ASMException;
+import Reika.DragonAPI.Exception.ASMException.NoSuchASMMethodException;
 import Reika.DragonAPI.Libraries.Java.ReikaASMHelper;
 
 public class TreeClimbingASM implements IClassTransformer {
@@ -81,6 +84,24 @@ public class TreeClimbingASM implements IClassTransformer {
 			cn.check(cn.version);
 			return writer.toByteArray();
 		}
+		else if (cn.name.equals("net/minecraft/block/BlockLeaves")) {
+			ReikaASMHelper.activeMod = "TreeClimbing";
+			try {
+				MethodNode m = ReikaASMHelper.getMethodByName(cn, "func_150122_b", "setGraphicsLevel", "(Z)V");
+				AbstractInsnNode loc1 = ReikaASMHelper.getFirstOpcode(m.instructions, Opcodes.ALOAD);
+				AbstractInsnNode loc2 = ReikaASMHelper.getFirstOpcode(m.instructions, Opcodes.PUTFIELD);
+				ReikaASMHelper.deleteFrom(cn, m.instructions, loc1, loc2);
+				ReikaASMHelper.log("Successfully applied leaf graphics patch!");
+				ReikaASMHelper.activeMod = null;
+				ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+				cn.accept(writer);
+				cn.check(cn.version);
+				return writer.toByteArray();
+			}
+			catch (NoSuchASMMethodException e) { //serverside
+				//e.printStackTrace();
+			}
+		}
 		return bytes;
 	}
 
@@ -99,6 +120,7 @@ public class TreeClimbingASM implements IClassTransformer {
 		li.add(new InsnNode(Opcodes.RETURN));
 
 		ReikaASMHelper.addMethod(cn, li, FMLForgePlugin.RUNTIME_DEOBF ? "func_149743_a" : "addCollisionBoxesToList", sig, Modifier.PUBLIC);
+		ReikaASMHelper.log("Successfully applied leaf AABB patch!");
 	}
 
 	private void patchLogClass(ClassNode cn) {

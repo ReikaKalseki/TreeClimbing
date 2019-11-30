@@ -10,8 +10,11 @@
 package Reika.TreeClimbing;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URL;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLeavesBase;
 import net.minecraftforge.common.ForgeModContainer;
 
 import Reika.DragonAPI.DragonAPICore;
@@ -71,6 +74,19 @@ public class TreeClimbing extends DragonAPIMod {
 	public void postload(FMLPostInitializationEvent evt) {
 		this.startTiming(LoadPhase.POSTLOAD);
 		ForgeModContainer.fullBoundingBoxLadders = true;
+		try {
+			Field f = BlockLeavesBase.class.getDeclaredField("field_150121_P");
+			f.setAccessible(true);
+			for (Object o : Block.blockRegistry.getKeys()) {
+				Block b = (Block)Block.blockRegistry.getObject(o);
+				if (b instanceof BlockLeavesBase) {
+					f.set(b, true);
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		this.finishTiming();
 	}
 
