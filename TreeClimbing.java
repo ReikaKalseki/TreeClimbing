@@ -43,6 +43,8 @@ public class TreeClimbing extends DragonAPIMod {
 
 	public static final SimpleConfig config = new SimpleConfig(instance);
 
+	public static boolean leafSneak;
+
 	@Override
 	@EventHandler
 	public void preload(FMLPreInitializationEvent evt) {
@@ -56,6 +58,8 @@ public class TreeClimbing extends DragonAPIMod {
 		config.loadSubfolderedConfigFile(evt);
 		config.loadDataFromFile(evt);
 		config.finishReading();
+
+		leafSneak = config.getBoolean("Options", "Sneaking falls through leaves", true);
 
 		this.basicSetup(evt);
 		this.finishTiming();

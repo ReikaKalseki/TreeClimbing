@@ -24,7 +24,7 @@ public class TreeHooks {
 		//ModularLogger.instance.log("leafbox", "Checking Leaf AABB @ "+new Coordinate(x, y, z)+" for "+e);
 		if (world.getBlock(x, y, z).isLeaves(world, x, y, z) && e instanceof EntityPlayer) {
 			//ModularLogger.instance.log("leafboxcheck", "Check 1");
-			if (e.posY < y+0.99 || e.isSneaking()) {
+			if (e.posY < y+0.99 || (e.isSneaking() && TreeClimbing.leafSneak)) {
 				//ModularLogger.instance.log("leafboxcheck", "Check 2");
 				if (ReikaTreeHelper.isNaturalLeaf(world, x, y, z)) {
 					//ModularLogger.instance.log("leafret", "return empty");
