@@ -67,6 +67,7 @@ public class TreeHooks {
 		if (tree != null) {
 			TreeReader reader = new TreeReader();
 			reader.setTree(tree);
+			reader.maxDepth = 100;
 			reader.bounds = BlockBox.block(x, y, z).expand(30, 255, 30); //this should roughly fit any tree
 			reader.bounds.clampTo(tree.getTypicalMaximumSize().offset(x, y, z));
 			reader.setStopIfValid();
