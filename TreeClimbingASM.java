@@ -45,6 +45,8 @@ public class TreeClimbingASM implements IClassTransformer {
 		logClasses.add("mods/natura/blocks/trees/LogTwoxTwo");
 		logClasses.add("mods/natura/blocks/trees/Planks");
 		logClasses.add("ic2/core/block/BlockRubWood");
+		logClasses.add("com/emoniph/witchery/blocks/BlockWitchLog");
+		logClasses.add("net/tropicraft/block/BlockTropicraftLog");
 
 
 		leafClasses.add("net/minecraft/block/BlockLeavesBase");
