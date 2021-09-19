@@ -110,6 +110,11 @@ public class TreeClimbing extends DragonAPIMod {
 	}
 
 	@Override
+	public URL getBugSite() {
+		return DragonAPICore.getReikaGithubPage();
+	}
+
+	@Override
 	public String getWiki() {
 		return null;
 	}
