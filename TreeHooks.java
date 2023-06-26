@@ -20,6 +20,25 @@ import Reika.DragonAPI.ModRegistry.ModWoodList;
 
 public class TreeHooks {
 
+	public static void getSnowAABB(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> li, Entity e) {
+		//ModularLogger.instance.log("leafbox", "Checking Leaf AABB @ "+new Coordinate(x, y, z)+" for "+e);
+		if (world.getBlock(x, y-1, z).isLeaves(world, x, y-1, z) && e instanceof EntityPlayer) {
+			//ModularLogger.instance.log("leafboxcheck", "Check 1");
+			if (e.posY < y+0.99 || (e.isSneaking() && TreeClimbing.leafSneak)) {
+				//ModularLogger.instance.log("leafboxcheck", "Check 2");
+				if (ReikaTreeHelper.isNaturalLeaf(world, x, y-1, z)) {
+					//ModularLogger.instance.log("leafret", "return empty");
+					return;
+				}
+			}
+		}
+
+		AxisAlignedBB bb = world.getBlock(x, y, z).getCollisionBoundingBoxFromPool(world, x, y, z);
+		if (bb != null && mask.intersectsWith(bb)) {
+			li.add(bb);
+		}
+	}
+
 	public static void getLeafAABB(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> li, Entity e) {
 		//ModularLogger.instance.log("leafbox", "Checking Leaf AABB @ "+new Coordinate(x, y, z)+" for "+e);
 		if (world.getBlock(x, y, z).isLeaves(world, x, y, z) && e instanceof EntityPlayer) {

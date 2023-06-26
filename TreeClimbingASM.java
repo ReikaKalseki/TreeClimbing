@@ -106,6 +106,35 @@ public class TreeClimbingASM implements IClassTransformer {
 				//e.printStackTrace();
 			}
 		}
+		else if (cn.name.equals("net/minecraft/block/BlockSnow")) {
+			ReikaASMHelper.activeMod = "TreeClimbing";
+			try {
+				InsnList li = new InsnList();
+				String sig = "(Lnet/minecraft/world/World;IIILnet/minecraft/util/AxisAlignedBB;Ljava/util/List;Lnet/minecraft/entity/Entity;)V";
+
+				li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+				li.add(new VarInsnNode(Opcodes.ILOAD, 2));
+				li.add(new VarInsnNode(Opcodes.ILOAD, 3));
+				li.add(new VarInsnNode(Opcodes.ILOAD, 4));
+				li.add(new VarInsnNode(Opcodes.ALOAD, 5));
+				li.add(new VarInsnNode(Opcodes.ALOAD, 6));
+				li.add(new VarInsnNode(Opcodes.ALOAD, 7));
+				li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "Reika/TreeClimbing/TreeHooks", "getSnowAABB", sig, false));
+				li.add(new InsnNode(Opcodes.RETURN));
+
+				ReikaASMHelper.addMethod(cn, li, FMLForgePlugin.RUNTIME_DEOBF ? "func_149743_a" : "addCollisionBoxesToList", sig, Modifier.PUBLIC);
+				ReikaASMHelper.log("Successfully applied leaf AABB patch!");
+			}
+			catch (NoSuchASMMethodException e) { //serverside
+				//e.printStackTrace();
+			}
+			ReikaASMHelper.activeMod = null;
+
+			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+			cn.accept(writer);
+			cn.check(cn.version);
+			return writer.toByteArray();
+		}
 		return bytes;
 	}
 
